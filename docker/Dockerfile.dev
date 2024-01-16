@@ -1,0 +1,24 @@
+FROM golang:1.21.0-bookworm
+
+RUN apt update && apt upgrade -y && \
+    apt install -y git \
+    make openssh-client
+
+RUN curl -fLo install.sh https://raw.githubusercontent.com/cosmtrek/air/master/install.sh \
+    && chmod +x install.sh && sh install.sh && cp ./bin/air /bin/air
+
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
+WORKDIR /app
+
+COPY ../ /app
+
+RUN go mod download
+
+COPY ../entrypoint.sh /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+EXPOSE 80
+
+CMD ["entrypoint.sh"]
