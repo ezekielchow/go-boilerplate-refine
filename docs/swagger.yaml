@@ -1,5 +1,14 @@
-basePath: /api/v1
+basePath: /v1
 definitions:
+  models.Error:
+    properties:
+      message:
+        type: string
+    type: object
+  models.Success:
+    properties:
+      data: {}
+    type: object
   models.User:
     properties:
       address:
@@ -25,6 +34,39 @@ info:
   title: Go Boilerplate API
   version: "1.0"
 paths:
+  /categories:
+    get:
+      description: Listing resource for categories
+      parameters:
+      - description: Data queried from
+        in: query
+        name: _start
+        required: true
+        type: string
+      - description: Data queried to
+        in: query
+        name: _end
+        required: true
+        type: string
+      - description: Sort by field
+        in: query
+        name: _sort
+        type: string
+      - description: Sort direction
+        in: query
+        name: _order
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Success'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      tags:
+      - category
   /users:
     get:
       consumes:

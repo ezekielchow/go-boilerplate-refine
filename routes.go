@@ -1,34 +1,23 @@
 package main
 
 import (
-	"fmt"
 	"go-boilerplate/controllers"
 	"net/http"
-	"strings"
 	"text/template"
 
 	"github.com/gin-gonic/gin"
 )
 
-type apiHandler struct{}
-
-func (apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
-	if strings.Contains(r.URL.Path, "asd") {
-		fmt.Fprintf(w, "gotcha")
-		return
-	}
-
-	fmt.Fprintf(w, "came in here")
-}
-
-func ApiHandler(r *gin.Engine) {
-	api := r.Group("api")
-	v1 := api.Group("v1")
+func WebRoutes(r *gin.Engine) {
+	v1 := r.Group("v1")
 
 	userController := new(controllers.UserController)
 	user := v1.Group("/users")
-	user.GET("/", userController.List)
+	user.GET("", userController.List)
+
+	cc := new(controllers.CategoryController)
+	category := v1.Group("/categories")
+	category.GET("", cc.GetList)
 }
 
 func WebHandler(router *http.ServeMux) {

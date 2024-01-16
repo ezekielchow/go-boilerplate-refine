@@ -27,7 +27,7 @@ import (
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @host      localhost:8900
-// @BasePath  /api/v1
+// @BasePath  /v1
 
 // @securityDefinitions.basic  BasicAuth
 
@@ -47,11 +47,11 @@ func main() {
 	r := gin.Default()
 
 	// swagger
-	docs.SwaggerInfo.BasePath = "/api/v1"
+	docs.SwaggerInfo.BasePath = "/v1"
 
 	r.Use(cors.Default())
 
-	ApiHandler(r)
+	WebRoutes(r)
 
 	// Form errors
 	validate.Config(func(opt *validate.GlobalOption) {

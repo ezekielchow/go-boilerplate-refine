@@ -15,7 +15,7 @@ full_bin = "cd /app && ./main"
 # This log file places in your tmp_dir.
 log = "air_errors.log"
 # Watch these filename extensions.
-include_ext = ["go", "yaml", "graphqls"]
+include_ext = ["go", "yaml", "graphqls", "sql"]
 # Ignore these filename extensions or directories.
 exclude_dir = ["tmp", "docs"]
 exclude_file = ["graph/model/models_gen.go", "graph/generated.go","graph/schema.resolvers.go"]

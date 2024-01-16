@@ -42,7 +42,10 @@ func initBootstrapTables() {
 			id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 			name TEXT NOT NULL,
 			created_at TIMESTAMP DEFAULT NOW()
-		)`)
+		);
+		
+		CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+	`)
 
 	if err != nil {
 		log.Fatalf("Failed to create migration table %v", err.Error())
