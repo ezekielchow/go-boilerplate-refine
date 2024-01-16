@@ -28,11 +28,13 @@ func (cs CategoryService) List(start string, end string, sortBy string, sortDire
 
 	categories := []models.Category{}
 
-	query := "Select * from " + models.CategoriesTable + " LIMIT " + fmt.Sprint(limitInt) + " OFFSET " + string(start)
+	query := "Select * from " + models.CategoriesTable
 
 	if sortBy != "" && sortDirection != "" {
-		query = query + " ORDER BY " + sortBy + " " + strings.ToUpper(sortDirection)
+		query = query + " ORDER BY " + strings.ToLower(sortBy) + " " + strings.ToUpper(sortDirection)
 	}
+
+	query = query + " LIMIT " + fmt.Sprint(limitInt) + " OFFSET " + string(start)
 
 	rows, err := db.Query(query)
 	if err != nil {
