@@ -5,9 +5,10 @@ definitions:
       message:
         type: string
     type: object
-  models.Success:
+  models.ListSuccess:
     properties:
       data: {}
+      headers: {}
     type: object
   models.User:
     properties:
@@ -60,7 +61,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Success'
+            $ref: '#/definitions/models.ListSuccess'
         "500":
           description: Internal Server Error
           schema:

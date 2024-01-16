@@ -61,7 +61,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Success"
+                            "$ref": "#/definitions/models.ListSuccess"
                         }
                     },
                     "500": {
@@ -106,10 +106,11 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Success": {
+        "models.ListSuccess": {
             "type": "object",
             "properties": {
-                "data": {}
+                "data": {},
+                "headers": {}
             }
         },
         "models.User": {

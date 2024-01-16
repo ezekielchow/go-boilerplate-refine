@@ -4,6 +4,7 @@ type Error struct {
 	Message string
 }
 
-type Success struct {
-	Data interface{}
+type ListSuccess struct {
+	Data    interface{}
+	Headers interface{}
 }

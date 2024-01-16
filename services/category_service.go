@@ -11,7 +11,7 @@ import (
 
 type CategoryService struct{}
 
-func (cs CategoryService) List(start string, end string, sortBy string, sortDirection string) []models.Category {
+func (cs CategoryService) List(start string, end string, sortBy string, sortDirection string) ([]models.Category, int) {
 	db := utils.DB
 
 	startInt, err := strconv.Atoi(start)
@@ -48,5 +48,11 @@ func (cs CategoryService) List(start string, end string, sortBy string, sortDire
 		categories = append(categories, category)
 	}
 
-	return categories
+	var count int
+	err = utils.DB.QueryRow("SELECT COUNT(id) FROM " + models.CategoriesTable).Scan(&count)
+	if err != nil {
+		log.Fatalf("Category Listing: counting failed %v", err.Error())
+	}
+
+	return categories, count
 }
