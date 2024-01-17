@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"log"
 
 	"github.com/gookit/validate"
@@ -17,7 +18,7 @@ func AddValidators() {
 			var count int
 
 			if ignoreField != "nil" {
-				err := DB.QueryRow("SELECT COUNT(id) FROM " + table + " WHERE " + field + " = " + val + " AND " + ignoreField + " != " + ignoreValue).Scan(&count)
+				err := DB.QueryRow(context.Background(), "SELECT COUNT(id) FROM "+table+" WHERE "+field+" = "+val+" AND "+ignoreField+" != "+ignoreValue).Scan(&count)
 				if err != nil {
 					log.Fatalf("Unique validator failed with ingnore field")
 				}
@@ -25,7 +26,7 @@ func AddValidators() {
 				return count <= 0
 			}
 
-			err := DB.QueryRow("SELECT COUNT(id) FROM " + table + " WHERE " + field + " = " + val).Scan(&count)
+			err := DB.QueryRow(context.Background(), "SELECT COUNT(id) FROM "+table+" WHERE "+field+" = "+val).Scan(&count)
 			if err != nil {
 				log.Fatalf("Unique validator failed")
 			}
@@ -36,7 +37,7 @@ func AddValidators() {
 
 			var count int
 
-			err := DB.QueryRow("SELECT COUNT(id) FROM " + table + " WHERE " + field + " = " + val).Scan(&count)
+			err := DB.QueryRow(context.Background(), "SELECT COUNT(id) FROM "+table+" WHERE "+field+" = "+val).Scan(&count)
 			if err != nil {
 				log.Fatalf("Unique validator failed")
 			}

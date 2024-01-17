@@ -1,17 +1,28 @@
 package services
 
 import (
+	"context"
 	"fmt"
 	"go-boilerplate/models"
 	"go-boilerplate/utils"
 	"log"
+	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/jackc/pgx/v5"
 )
 
 type CategoryService struct{}
 
-func (cs CategoryService) List(start string, end string, sortBy string, sortDirection string) ([]models.Category, int) {
+func (cs CategoryService) List(queries url.Values) ([]models.Category, int) {
+
+	start := queries.Get("_start")
+	end := queries.Get("_end")
+	sortBy := queries.Get("_sort")
+	sortDirection := queries.Get("_order")
+	filters := utils.ExtractFilters(queries, models.CategoriesSearchable)
+
 	db := utils.DB
 
 	startInt, err := strconv.Atoi(start)
@@ -27,16 +38,50 @@ func (cs CategoryService) List(start string, end string, sortBy string, sortDire
 	limitInt := endInt - startInt
 
 	categories := []models.Category{}
-
 	query := "Select * from " + models.CategoriesTable
+	countQuery := "Select count(*) from " + models.CategoriesTable
+	queryActions := ""
 
-	if sortBy != "" && sortDirection != "" {
-		query = query + " ORDER BY " + strings.ToLower(sortBy) + " " + strings.ToUpper(sortDirection)
+	args := pgx.NamedArgs{}
+
+	if len(filters) > 0 {
+		queryActions = queryActions + " WHERE "
+
+		for k, v := range filters {
+			queryActions = queryActions + k + " LIKE @" + k + " AND "
+			args[k] = "%" + v + "%"
+		}
+
+		queryActions = queryActions[:len(queryActions)-4]
 	}
 
-	query = query + " LIMIT " + fmt.Sprint(limitInt) + " OFFSET " + string(start)
+	var count int
+	countQuery = countQuery + queryActions
+	if len(filters) > 0 {
+		err = db.QueryRow(context.Background(), countQuery, args).Scan(&count)
+	} else {
+		err = db.QueryRow(context.Background(), countQuery).Scan(&count)
+	}
 
-	rows, err := db.Query(query)
+	if err != nil {
+		log.Fatalf("Category Listing: counting failed %v", err.Error())
+	}
+
+	if sortBy != "" && sortDirection != "" {
+		queryActions = queryActions + " ORDER BY " + strings.ToLower(sortBy) + " " + strings.ToUpper(sortDirection)
+	}
+
+	queryActions = queryActions + " LIMIT " + fmt.Sprint(limitInt) + " OFFSET " + string(start)
+
+	var rows pgx.Rows
+	query = query + queryActions
+
+	if len(filters) > 0 {
+		rows, err = db.Query(context.Background(), query, args)
+	} else {
+		rows, err = db.Query(context.Background(), query)
+	}
+
 	if err != nil {
 		log.Fatalf("Category Listing: Unable to query %v", err.Error())
 	}
@@ -48,12 +93,6 @@ func (cs CategoryService) List(start string, end string, sortBy string, sortDire
 		}
 
 		categories = append(categories, category)
-	}
-
-	var count int
-	err = utils.DB.QueryRow("SELECT COUNT(id) FROM " + models.CategoriesTable).Scan(&count)
-	if err != nil {
-		log.Fatalf("Category Listing: counting failed %v", err.Error())
 	}
 
 	return categories, count

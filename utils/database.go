@@ -1,14 +1,15 @@
 package utils
 
 import (
-	"database/sql"
+	"context"
 	"log"
 	"os"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-var DB *sql.DB
+var DB *pgxpool.Pool
 
 func connectToDatabase(dsn string) {
 	if len(dsn) == 0 {
@@ -16,16 +17,12 @@ func connectToDatabase(dsn string) {
 	}
 
 	var err error
-	DB, err = sql.Open("pgx", dsn)
+	DB, err = pgxpool.New(context.Background(), dsn)
 	if err != nil {
 		log.Fatal("unable to use data source name", err)
 	}
 
-	DB.SetConnMaxLifetime(-1)
-	DB.SetMaxIdleConns(3)
-	DB.SetMaxOpenConns(3)
-
-	if err = DB.Ping(); err != nil {
+	if err = DB.Ping(context.Background()); err != nil {
 		log.Fatalf("Unable to connect to database: %v", err)
 	}
 }
@@ -37,7 +34,7 @@ func SetupDatabase(dsn string) {
 }
 
 func initBootstrapTables() {
-	_, err := DB.Exec(
+	_, err := DB.Exec(context.Background(),
 		`CREATE TABLE IF NOT EXISTS MIGRATIONS(
 			id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 			name TEXT NOT NULL,
@@ -64,7 +61,7 @@ func migrationExists(needle string, haystack []string) bool {
 
 func runMigrations() {
 
-	rows, err := DB.Query("SELECT name FROM migrations")
+	rows, err := DB.Query(context.Background(), "SELECT name FROM migrations")
 
 	if err != nil {
 		log.Fatalf("Unable to query migrations %v", err.Error())
@@ -99,13 +96,13 @@ func runMigrations() {
 			log.Fatalf("Unable to read migration %v", err.Error())
 		}
 
-		_, err = DB.Exec(string(b[:]))
+		_, err = DB.Exec(context.Background(), string(b[:]))
 
 		if err != nil {
 			log.Fatalf("Failed to create table %v", err.Error())
 		}
 
-		if _, err = DB.Exec("INSERT INTO MIGRATIONS (name) VALUES ('" + file.Name() + "')"); err != nil {
+		if _, err = DB.Exec(context.Background(), "INSERT INTO MIGRATIONS (name) VALUES ('"+file.Name()+"')"); err != nil {
 			log.Fatalf("Failed to update migrations table after creating migration %v %v", file.Name(), err.Error())
 		}
 

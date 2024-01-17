@@ -22,7 +22,7 @@ type CategoryController struct{}
 func (cc CategoryController) GetList(c *gin.Context) {
 
 	cs := new(services.CategoryService)
-	data, count := cs.List(c.Query("_start"), c.Query("_end"), c.Query("_sort"), c.Query("_order"))
+	data, count := cs.List(c.Request.URL.Query())
 
 	c.Writer.Header().Add("access-control-expose-headers", "X-Total-Count")
 	c.Writer.Header().Add("X-Total-Count", fmt.Sprint(count))
