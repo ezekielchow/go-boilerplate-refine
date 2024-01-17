@@ -1,5 +1,12 @@
 basePath: /v1
 definitions:
+  models.Category:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
   models.Error:
     properties:
       message:
@@ -62,6 +69,26 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.ListSuccess'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      tags:
+      - category
+    post:
+      description: Create resource for category
+      parameters:
+      - description: Name of category
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Category'
         "500":
           description: Internal Server Error
           schema:

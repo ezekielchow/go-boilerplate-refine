@@ -18,6 +18,7 @@ func WebRoutes(r *gin.Engine) {
 	cc := new(controllers.CategoryController)
 	category := v1.Group("/categories")
 	category.GET("", cc.GetList)
+	category.POST("", cc.Create)
 }
 
 func WebHandler(router *http.ServeMux) {

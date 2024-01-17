@@ -2,9 +2,12 @@ package controllers
 
 import (
 	"fmt"
+	"go-boilerplate/models"
 	"go-boilerplate/services"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gookit/validate"
 )
 
 type CategoryController struct{}
@@ -26,5 +29,38 @@ func (cc CategoryController) GetList(c *gin.Context) {
 
 	c.Writer.Header().Add("access-control-expose-headers", "X-Total-Count")
 	c.Writer.Header().Add("X-Total-Count", fmt.Sprint(count))
+	c.JSON(200, data)
+}
+
+type createValidation struct {
+	Name string `json:"name" validate:"required|string|min_len:1"`
+}
+
+// @Description Create resource for category
+// @Tags category
+// @Product json
+// @Param name body string true "Name of category"
+// @Success 200 {object} models.Category
+// @Failure 500 {object} models.Error
+// @Router /categories [post]
+func (cc CategoryController) Create(c *gin.Context) {
+	var cv createValidation
+	err := c.ShouldBindJSON(&cv)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Create category invalid request"})
+		return
+	}
+
+	v := validate.Struct(cv)
+
+	if !v.Validate() {
+		err = v.Errors
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	cs := new(services.CategoryService)
+	data := cs.Create(models.Category{Name: cv.Name})
+
 	c.JSON(200, data)
 }

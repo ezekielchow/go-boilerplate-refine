@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"go-boilerplate/models"
 	"go-boilerplate/utils"
@@ -11,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type CategoryService struct{}
@@ -96,4 +98,20 @@ func (cs CategoryService) List(queries url.Values) ([]models.Category, int) {
 	}
 
 	return categories, count
+}
+
+func (cs CategoryService) Create(data models.Category) models.Category {
+	db := utils.DB
+
+	var category models.Category
+
+	err := db.QueryRow(context.Background(), "INSERT INTO "+models.CategoriesTable+" (name) VALUES (@name) RETURNING id,name", pgx.NamedArgs{"name": data.Name}).Scan(&category.ID, &category.Name)
+	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) {
+			log.Fatalf("Category Creation : failed %v", pgErr.Message)
+		}
+	}
+
+	return category
 }
