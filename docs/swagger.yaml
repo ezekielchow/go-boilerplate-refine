@@ -95,6 +95,20 @@ paths:
             $ref: '#/definitions/models.Error'
       tags:
       - category
+  /categories/:id:
+    get:
+      description: Get one category
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Category'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      tags:
+      - category
   /users:
     get:
       consumes:

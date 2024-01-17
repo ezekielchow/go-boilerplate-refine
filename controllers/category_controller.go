@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-boilerplate/models"
 	"go-boilerplate/services"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -29,7 +30,7 @@ func (cc CategoryController) GetList(c *gin.Context) {
 
 	c.Writer.Header().Add("access-control-expose-headers", "X-Total-Count")
 	c.Writer.Header().Add("X-Total-Count", fmt.Sprint(count))
-	c.JSON(200, data)
+	c.JSON(http.StatusOK, data)
 }
 
 type createValidation struct {
@@ -62,5 +63,29 @@ func (cc CategoryController) Create(c *gin.Context) {
 	cs := new(services.CategoryService)
 	data := cs.Create(models.Category{Name: cv.Name})
 
-	c.JSON(200, data)
+	c.JSON(http.StatusOK, data)
+}
+
+// @Description Get one category
+// @Tags category
+// @Product json
+// @Success 200 {object} models.Category
+// @Failure 500 {object} models.Error
+// @Router /categories/:id [get]
+func (cc CategoryController) GetOne(c *gin.Context) {
+	id, hasParam := c.Params.Get("id")
+
+	if !hasParam {
+		log.Fatalf("Get One Category id Missing")
+	}
+
+	cs := new(services.CategoryService)
+	category, found := cs.GetOne(id)
+
+	if !found {
+		c.JSON(http.StatusNotFound, nil)
+		return
+	}
+
+	c.JSON(http.StatusOK, category)
 }

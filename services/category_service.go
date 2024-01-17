@@ -104,7 +104,6 @@ func (cs CategoryService) Create(data models.Category) models.Category {
 	db := utils.DB
 
 	var category models.Category
-
 	err := db.QueryRow(context.Background(), "INSERT INTO "+models.CategoriesTable+" (name) VALUES (@name) RETURNING id,name", pgx.NamedArgs{"name": data.Name}).Scan(&category.ID, &category.Name)
 	if err != nil {
 		var pgErr *pgconn.PgError
@@ -114,4 +113,16 @@ func (cs CategoryService) Create(data models.Category) models.Category {
 	}
 
 	return category
+}
+
+func (cs CategoryService) GetOne(id string) (models.Category, bool) {
+	db := utils.DB
+
+	var category models.Category
+	err := db.QueryRow(context.Background(), "SELECT * FROM "+models.CategoriesTable+" WHERE id = @id", pgx.NamedArgs{"id": id}).Scan(&category.ID, &category.Name)
+	if err != nil {
+		return models.Category{}, false
+	}
+
+	return category, true
 }

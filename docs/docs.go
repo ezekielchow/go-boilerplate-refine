@@ -104,6 +104,28 @@ const docTemplate = `{
                 }
             }
         },
+        "/categories/:id": {
+            "get": {
+                "description": "Get one category",
+                "tags": [
+                    "category"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Category"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "get a list of users",
