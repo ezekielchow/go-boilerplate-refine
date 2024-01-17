@@ -64,6 +64,8 @@ paths:
         in: query
         name: _order
         type: string
+      produces:
+      - application/json
       responses:
         "200":
           description: OK
@@ -84,6 +86,8 @@ paths:
         required: true
         schema:
           type: string
+      produces:
+      - application/json
       responses:
         "200":
           description: OK
@@ -98,6 +102,30 @@ paths:
   /categories/:id:
     get:
       description: Get one category
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Category'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      tags:
+      - category
+    patch:
+      description: Update one category
+      parameters:
+      - description: Name of category
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
       responses:
         "200":
           description: OK

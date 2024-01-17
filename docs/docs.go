@@ -26,6 +26,9 @@ const docTemplate = `{
         "/categories": {
             "get": {
                 "description": "Listing resource for categories",
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "category"
                 ],
@@ -74,6 +77,9 @@ const docTemplate = `{
             },
             "post": {
                 "description": "Create resource for category",
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "category"
                 ],
@@ -107,8 +113,45 @@ const docTemplate = `{
         "/categories/:id": {
             "get": {
                 "description": "Get one category",
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "category"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Category"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update one category",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "parameters": [
+                    {
+                        "description": "Name of category",
+                        "name": "name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {

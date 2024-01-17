@@ -15,7 +15,7 @@ type CategoryController struct{}
 
 // @Description Listing resource for categories
 // @Tags category
-// @Product json
+// @Produce json
 // @Param _start query string true "Data queried from"
 // @Param _end query string true "Data queried to"
 // @Param _sort query string false "Sort by field"
@@ -39,7 +39,7 @@ type createValidation struct {
 
 // @Description Create resource for category
 // @Tags category
-// @Product json
+// @Produce json
 // @Param name body string true "Name of category"
 // @Success 200 {object} models.Category
 // @Failure 500 {object} models.Error
@@ -68,7 +68,7 @@ func (cc CategoryController) Create(c *gin.Context) {
 
 // @Description Get one category
 // @Tags category
-// @Product json
+// @Produce json
 // @Success 200 {object} models.Category
 // @Failure 500 {object} models.Error
 // @Router /categories/:id [get]
@@ -86,6 +86,33 @@ func (cc CategoryController) GetOne(c *gin.Context) {
 		c.JSON(http.StatusNotFound, nil)
 		return
 	}
+
+	c.JSON(http.StatusOK, category)
+}
+
+// @Description Update one category
+// @Tags category
+// @Produce json
+// @Param name body string true "Name of category"
+// @Success 200 {object} models.Category
+// @Failure 500 {object} models.Error
+// @Router /categories/:id [patch]
+func (cc CategoryController) Update(c *gin.Context) {
+	id, hasParam := c.Params.Get("id")
+
+	if !hasParam {
+		log.Fatalf("Get One Category id Missing")
+	}
+
+	var data models.Category
+	err := c.ShouldBindJSON(&data)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Update Category unable to bind json"})
+		return
+	}
+
+	cs := new(services.CategoryService)
+	category := cs.Update(id, data)
 
 	c.JSON(http.StatusOK, category)
 }

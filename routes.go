@@ -20,6 +20,7 @@ func WebRoutes(r *gin.Engine) {
 	category.GET("", cc.GetList)
 	category.POST("", cc.Create)
 	category.GET("/:id", cc.GetOne)
+	category.PATCH("/:id", cc.Update)
 }
 
 func WebHandler(router *http.ServeMux) {

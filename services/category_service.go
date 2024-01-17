@@ -8,6 +8,7 @@ import (
 	"go-boilerplate/utils"
 	"log"
 	"net/url"
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -125,4 +126,40 @@ func (cs CategoryService) GetOne(id string) (models.Category, bool) {
 	}
 
 	return category, true
+}
+
+func (cs CategoryService) Update(id string, data models.Category) models.Category {
+	db := utils.DB
+
+	args := make(pgx.NamedArgs)
+	args["id"] = id
+
+	query := "UPDATE " + models.CategoriesTable + " SET "
+
+	values := reflect.ValueOf(data)
+	types := values.Type()
+	for i := 0; i < values.NumField(); i++ {
+		k := strings.ToLower(types.Field(i).Name)
+		v := values.Field(i)
+
+		if k == "id" {
+			continue
+		}
+
+		query = query + " " + k + "=" + "@" + k + ","
+		args[k] = fmt.Sprint(v)
+	}
+	query = query[:len(query)-1]
+	query = query + " where id= @id"
+
+	var category models.Category
+	err := db.QueryRow(context.Background(), query, args).Scan(&category.ID, &category.Name)
+	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) {
+			log.Fatalf("Category Creation : failed %v", pgErr.Message)
+		}
+	}
+
+	return category
 }
