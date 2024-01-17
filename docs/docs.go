@@ -134,6 +134,29 @@ const docTemplate = `{
                     }
                 }
             },
+            "delete": {
+                "description": "Delete one category",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Error"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "description": "Update one category",
                 "produces": [
@@ -147,7 +170,6 @@ const docTemplate = `{
                         "description": "Name of category",
                         "name": "name",
                         "in": "body",
-                        "required": true,
                         "schema": {
                             "type": "string"
                         }

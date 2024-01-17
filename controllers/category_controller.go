@@ -93,7 +93,7 @@ func (cc CategoryController) GetOne(c *gin.Context) {
 // @Description Update one category
 // @Tags category
 // @Produce json
-// @Param name body string true "Name of category"
+// @Param name body string false "Name of category"
 // @Success 200 {object} models.Category
 // @Failure 500 {object} models.Error
 // @Router /categories/:id [patch]
@@ -101,7 +101,7 @@ func (cc CategoryController) Update(c *gin.Context) {
 	id, hasParam := c.Params.Get("id")
 
 	if !hasParam {
-		log.Fatalf("Get One Category id Missing")
+		log.Fatalf("Update One Category id Missing")
 	}
 
 	var data models.Category
@@ -115,4 +115,27 @@ func (cc CategoryController) Update(c *gin.Context) {
 	category := cs.Update(id, data)
 
 	c.JSON(http.StatusOK, category)
+}
+
+// @Description Delete one category
+// @Tags category
+// @Produce json
+// @Success 200 {object} boolean
+// @Failure 500 {object} models.Error
+// @Router /categories/:id [delete]
+func (cc CategoryController) Delete(c *gin.Context) {
+	fmt.Println("oi!!!")
+
+	id, hasParam := c.Params.Get("id")
+
+	if !hasParam {
+		log.Fatalf("Delete One Category id Missing")
+	}
+
+	cs := new(services.CategoryService)
+	if !cs.Delete(id) {
+		c.JSON(http.StatusOK, false)
+	}
+
+	c.JSON(http.StatusOK, true)
 }

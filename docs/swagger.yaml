@@ -100,6 +100,21 @@ paths:
       tags:
       - category
   /categories/:id:
+    delete:
+      description: Delete one category
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Error'
+      tags:
+      - category
     get:
       description: Get one category
       produces:
@@ -121,7 +136,6 @@ paths:
       - description: Name of category
         in: body
         name: name
-        required: true
         schema:
           type: string
       produces:

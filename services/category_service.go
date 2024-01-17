@@ -163,3 +163,15 @@ func (cs CategoryService) Update(id string, data models.Category) models.Categor
 
 	return category
 }
+
+func (cs CategoryService) Delete(id string) bool {
+	db := utils.DB
+
+	_, err := db.Exec(context.Background(), "DELETE FROM "+models.CategoriesTable+" WHERE id = @id", pgx.NamedArgs{"id": id})
+	if err != nil {
+		log.Fatalf("Category Deletion: Failed to delete")
+		return false
+	}
+
+	return true
+}

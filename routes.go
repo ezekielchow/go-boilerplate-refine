@@ -21,6 +21,7 @@ func WebRoutes(r *gin.Engine) {
 	category.POST("", cc.Create)
 	category.GET("/:id", cc.GetOne)
 	category.PATCH("/:id", cc.Update)
+	category.DELETE("/:id", cc.Delete)
 }
 
 func WebHandler(router *http.ServeMux) {
