@@ -26,32 +26,39 @@ import (
 // @license.name  Apache 2.0
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host      localhost:8900
-// @BasePath  /v1
-
-// @securityDefinitions.basic  BasicAuth
+// @host      localhost:3050
 
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/
+// @securitydefinitions.oauth2.application OAuth2Application
+// @tokenUrl https://dev-7iha82mtaab0qlu7.us.auth0.com/oauth/token
 func main() {
 
-	env, err := utils.LoadEnv()
+	err := utils.LoadEnv()
 
 	if err != nil {
 		panic("env missing")
 	}
 
-	utils.SetupDatabase(env.DSN)
+	utils.SetupDatabase(utils.Envs.DSN)
 	utils.AddValidators()
 
 	r := gin.Default()
 
 	// swagger
-	docs.SwaggerInfo.BasePath = "/v1"
+	docs.SwaggerInfo.BasePath = "/api/v1"
 
+	// TODO: only enable client to call
+	// r.Use(cors.New(cors.Config{
+	// 	AllowCredentials: true,
+	// 	AllowMethods:     []string{"GET", "POST", "PUT", "PATCH"},
+	// 	AllowOrigins:     []string{"http://localhost:3000"},
+	// 	AllowHeaders:     []string{"Authorization"},
+	// }))
 	r.Use(cors.Default())
+	r.Use(gin.Recovery())
 
-	WebRoutes(r)
+	ApiRoutes(r)
 
 	// Form errors
 	validate.Config(func(opt *validate.GlobalOption) {
@@ -61,9 +68,9 @@ func main() {
 	})
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	if err := r.Run(":" + env.APP_PORT); err != nil {
+	if err := r.Run(":" + utils.Envs.APP_PORT); err != nil {
 		log.Fatalf("Unable to serve %v", err.Error())
 	}
 
-	fmt.Println("Serving at " + env.APP_PORT)
+	fmt.Println("Serving at " + utils.Envs.APP_PORT)
 }

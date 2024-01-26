@@ -25,6 +25,11 @@ const docTemplate = `{
     "paths": {
         "/categories": {
             "get": {
+                "security": [
+                    {
+                        "OAuth2Application": []
+                    }
+                ],
                 "description": "Listing resource for categories",
                 "produces": [
                     "application/json"
@@ -76,6 +81,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "OAuth2Application": []
+                    }
+                ],
                 "description": "Create resource for category",
                 "produces": [
                     "application/json"
@@ -112,6 +122,11 @@ const docTemplate = `{
         },
         "/categories/:id": {
             "get": {
+                "security": [
+                    {
+                        "OAuth2Application": []
+                    }
+                ],
                 "description": "Get one category",
                 "produces": [
                     "application/json"
@@ -135,6 +150,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "OAuth2Application": []
+                    }
+                ],
                 "description": "Delete one category",
                 "produces": [
                     "application/json"
@@ -158,6 +178,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "OAuth2Application": []
+                    }
+                ],
                 "description": "Update one category",
                 "produces": [
                     "application/json"
@@ -193,6 +218,11 @@ const docTemplate = `{
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "OAuth2Application": []
+                    }
+                ],
                 "description": "get a list of users",
                 "consumes": [
                     "application/json"
@@ -258,8 +288,10 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
-        "BasicAuth": {
-            "type": "basic"
+        "OAuth2Application": {
+            "type": "oauth2",
+            "flow": "application",
+            "tokenUrl": "https://dev-7iha82mtaab0qlu7.us.auth0.com/oauth/token"
         }
     },
     "externalDocs": {
@@ -271,8 +303,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8900",
-	BasePath:         "/v1",
+	Host:             "localhost:3050",
+	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Go Boilerplate API",
 	Description:      "This is a sample server celler server.",

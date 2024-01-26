@@ -23,7 +23,9 @@ type Config struct {
 	DSN                string `json:"DSN"`
 }
 
-func LoadEnv() (config *Config, err error) {
+var Envs Config
+
+func LoadEnv() (err error) {
 
 	envPairs := map[string]interface{}{}
 
@@ -44,7 +46,7 @@ func LoadEnv() (config *Config, err error) {
 		return
 	}
 
-	err = json.Unmarshal(b, &config)
+	err = json.Unmarshal(b, &Envs)
 
 	return
 }

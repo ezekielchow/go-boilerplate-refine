@@ -23,6 +23,7 @@ type CategoryController struct{}
 // @Success 200 {object} models.ListSuccess
 // @Failure 500 {object} models.Error
 // @Router /categories [get]
+// @Security OAuth2Application
 func (cc CategoryController) GetList(c *gin.Context) {
 
 	cs := new(services.CategoryService)
@@ -44,6 +45,7 @@ type createValidation struct {
 // @Success 200 {object} models.Category
 // @Failure 500 {object} models.Error
 // @Router /categories [post]
+// @Security OAuth2Application
 func (cc CategoryController) Create(c *gin.Context) {
 	var cv createValidation
 	err := c.ShouldBindJSON(&cv)
@@ -72,6 +74,7 @@ func (cc CategoryController) Create(c *gin.Context) {
 // @Success 200 {object} models.Category
 // @Failure 500 {object} models.Error
 // @Router /categories/:id [get]
+// @Security OAuth2Application
 func (cc CategoryController) GetOne(c *gin.Context) {
 	id, hasParam := c.Params.Get("id")
 
@@ -97,6 +100,7 @@ func (cc CategoryController) GetOne(c *gin.Context) {
 // @Success 200 {object} models.Category
 // @Failure 500 {object} models.Error
 // @Router /categories/:id [patch]
+// @Security OAuth2Application
 func (cc CategoryController) Update(c *gin.Context) {
 	id, hasParam := c.Params.Get("id")
 
@@ -123,6 +127,7 @@ func (cc CategoryController) Update(c *gin.Context) {
 // @Success 200 {object} boolean
 // @Failure 500 {object} models.Error
 // @Router /categories/:id [delete]
+// @Security OAuth2Application
 func (cc CategoryController) Delete(c *gin.Context) {
 	fmt.Println("oi!!!")
 

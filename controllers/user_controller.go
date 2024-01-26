@@ -16,6 +16,7 @@ type UserController struct{}
 // @Produce json
 // @Success 200 {object} models.User
 // @Router /users [get]
+// @Security OAuth2Application
 func (uc UserController) List(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"users": nil})
 }

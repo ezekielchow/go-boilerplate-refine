@@ -14,11 +14,15 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8900",
-    "basePath": "/v1",
+    "host": "localhost:3050",
     "paths": {
         "/categories": {
             "get": {
+                "security": [
+                    {
+                        "OAuth2Application": []
+                    }
+                ],
                 "description": "Listing resource for categories",
                 "produces": [
                     "application/json"
@@ -70,6 +74,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "OAuth2Application": []
+                    }
+                ],
                 "description": "Create resource for category",
                 "produces": [
                     "application/json"
@@ -106,6 +115,11 @@
         },
         "/categories/:id": {
             "get": {
+                "security": [
+                    {
+                        "OAuth2Application": []
+                    }
+                ],
                 "description": "Get one category",
                 "produces": [
                     "application/json"
@@ -129,6 +143,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "OAuth2Application": []
+                    }
+                ],
                 "description": "Delete one category",
                 "produces": [
                     "application/json"
@@ -152,6 +171,11 @@
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "OAuth2Application": []
+                    }
+                ],
                 "description": "Update one category",
                 "produces": [
                     "application/json"
@@ -187,6 +211,11 @@
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "OAuth2Application": []
+                    }
+                ],
                 "description": "get a list of users",
                 "consumes": [
                     "application/json"
@@ -252,8 +281,10 @@
         }
     },
     "securityDefinitions": {
-        "BasicAuth": {
-            "type": "basic"
+        "OAuth2Application": {
+            "type": "oauth2",
+            "flow": "application",
+            "tokenUrl": "https://dev-7iha82mtaab0qlu7.us.auth0.com/oauth/token"
         }
     },
     "externalDocs": {
